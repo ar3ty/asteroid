@@ -2,6 +2,7 @@ import pygame
 from constants import *
 from circleshape import CircleShape
 from shot import Shot
+count_dt = 0
 
 class Player(CircleShape):
     def __init__(self, x, y):
@@ -17,8 +18,24 @@ class Player(CircleShape):
         c = self.position - forward * self.radius + right
         return [a, b, c]
     
-    def draw(self, screen):
+    def engine_fire(self):
+        forward = pygame.Vector2(0, -2).rotate(self.rotation)
+        right = pygame.Vector2(0, 7).rotate(self.rotation + 90)
+        i = pygame.Vector2(0, -20).rotate(self.rotation)
+        a = self.position + forward * self.radius
+        b = self.position + i - right
+        c = self.position + i + right
+        return [a, b, c]
+    
+    def draw(self, screen, dt):
+        global count_dt
+        keys = pygame.key.get_pressed()
         pygame.draw.polygon(screen, "white", self.triangle(), 2)
+        if keys[pygame.K_w] and count_dt >= 1.05 * dt:
+            pygame.draw.polygon(screen, "white", self.engine_fire(), 2)
+            count_dt = 0
+        else: 
+            count_dt += dt
 
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -43,7 +60,7 @@ class Player(CircleShape):
         if keys[pygame.K_SPACE]:
             self.shoot()
         
-        self.velocity *= 0.99
+        self.velocity *= 0.999
         self.position += self.velocity * dt
 
         if self.position.x < 0:
