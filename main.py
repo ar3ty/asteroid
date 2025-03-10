@@ -6,9 +6,19 @@ from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
 
+def menu():
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    clock = pygame.time.Clock()
+    dt = 0
+
+
+
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    running = True
     clock = pygame.time.Clock()
     dt = 0
 
@@ -25,10 +35,10 @@ def main():
     asteroid_field = AsteroidField()
 
     
-    while True:
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return
+                running = False
             
         for object in updatable:
             object.update(dt)    
@@ -49,6 +59,7 @@ def main():
         pygame.display.flip()
 
         dt = clock.tick(60) / 1000
+
 
 if __name__ == "__main__":
     main()
